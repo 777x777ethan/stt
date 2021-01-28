@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            font-family: arial;
+        }
+        
+        button {
+            padding: 10px;
+            background-color: #6a67ce;
+            color: #FFFFFF;
+            border: 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        #output {
+            background-color: #F9F9F9;
+            padding: 10px;
+            margin-top: 20px;
+            line-height: 30px;
+        }
+        
+        .hide {
+            display: none;
+        }
+        
+        .show {
+            display: block;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>語音辨識</title>
+</head>
+
+<body>
+    <button id="action" type="button" onclick="runSpeechRecognition()">開始</button>
+    <div id="output" class="hide"></div>
+    <script>
+        function runSpeechRecognition() {
+            var output = document.getElementById("output");
+            var action = document.getElementById("action");
+
+            var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+            var recognition = new SpeechRecognition();
+            recognition.lang = 'cmn-Hant-TW'; //台灣
+
+            recognition.onstart = function() {
+                action.innerText = "請說話";
+            };
+
+            recognition.onspeechend = function() {
+                action.innerHTML = "已停止聆聽";
+                recognition.stop();
+            }
+
+            recognition.onresult = function(event) {
+                var transcript = event.results[0][0].transcript;
+                var confidence = event.results[0][0].confidence;
+                output.innerHTML = "<b>文字:</b> " + transcript + "<br/> <b>辨識率:</b> " + confidence * 100 + "%";
+                output.classList.remove("hide");
+                action.innerText = "開始";
+            };
+
+            // start recognition
+            recognition.start();
+        }
+    </script>
+</body>
+
+</html>
